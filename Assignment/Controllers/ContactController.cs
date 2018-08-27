@@ -34,10 +34,10 @@ namespace Assignment.Controllers
                     ViewBag.filter = filter;
                     records.Content = contacts
                         .Where(x => filter == null ||
-                            (x.FirstName.Trim().Contains(filter.Trim()))
-                               || x.LastName.Trim().Contains(filter.Trim())
-                               || (x.PhoneNumber.Trim().Contains(filter.Trim())) 
-                               || x.Email.Trim().Contains(filter.Trim())
+                            (x.FirstName.Trim().ToLower().Contains(filter.Trim().ToLower()))
+                               || x.LastName.Trim().ToLower().Contains(filter.Trim().ToLower())
+                               || (x.PhoneNumber.Trim().ToLower().Contains(filter.Trim().ToLower())) 
+                               || x.Email.Trim().ToLower().Contains(filter.Trim().ToLower())
                           )
                     .OrderBy(sort + " " + sortdir)
                     .Skip((page - 1) * pageSize)
@@ -46,7 +46,12 @@ namespace Assignment.Controllers
 
                     records.TotalRecords = contacts
                      .Where(x => filter == null ||
-                           (x.PhoneNumber.Contains(filter)) || x.Email.Contains(filter)).Count();
+                            (x.FirstName.Trim().ToLower().Contains(filter.Trim().ToLower()))
+                               || x.LastName.Trim().ToLower().Contains(filter.Trim().ToLower())
+                               || (x.PhoneNumber.Trim().ToLower().Contains(filter.Trim().ToLower()))
+                               || x.Email.Trim().ToLower().Contains(filter.Trim().ToLower())
+
+                           ).Count();
 
                     records.CurrentPage = page;
                     records.PageSize = pageSize;

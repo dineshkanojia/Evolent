@@ -31,7 +31,7 @@
     }
 </p>
 <div class="well">
-    @using (Html.BeginForm("Index", null, FormMethod.Get))
+    @using (Html.BeginForm("Index", "Contact", FormMethod.Post, new { @id = "WebGridForm" }))
     {
         <div class="row">
             <div class="col-sm-4">
