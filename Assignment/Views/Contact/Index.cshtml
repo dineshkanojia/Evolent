@@ -1,0 +1,106 @@
+﻿@*//model IEnumerable<Assignment.Models.ContactViewModel>*@
+@model Assignment.Models.PageList<Assignment.Models.ContactViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .displayNone {
+        display: none;
+    }
+</style>
+
+<h2>Contact List</h2>
+<p>
+    @{
+        if (TempData.Count > 0)
+        {
+            if (TempData.Keys.Contains("smsg"))
+            {
+                <div class="alert alert-success" id="sucessMsg">@TempData.Peek("smsg").ToString()</div>
+            }
+
+            if (TempData.Keys.Contains("fmsg"))
+            {
+                <div class="alert alert-danger" id="failureMsg">@TempData.Peek("fmsg").ToString()</div>
+            }
+
+            TempData.Clear();
+        }
+    }
+</p>
+<div class="well">
+    @using (Html.BeginForm("Index", null, FormMethod.Get))
+    {
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="input-group">
+
+                    <input type="text"
+                           name="filter"
+                           value="@ViewBag.filter"
+                           class="form-control"
+                           style="display: inline"
+                           placeholder="Search by model and company" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Go</button>
+                    </span>
+
+                </div>
+            </div>
+            <div class="pull-right col-lg-1">
+                <a class="btn btn-success" data-modal="" href="/Contact/Create" id="btnCreate">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </div>
+        </div>
+
+        <div style="margin-top:17px;">
+
+            @{
+                if (Model.TotalRecords > 0)
+                {
+
+                    var grid = new WebGrid(
+                                canPage: true,
+                                rowsPerPage: Model.PageSize,
+                                canSort: true,
+                                ajaxUpdateContainerId: "grid");
+
+                    grid.Bind(Model.Content, rowCount: Model.TotalRecords, autoSortAndPage: false);
+                    grid.Pager(WebGridPagerModes.All);
+
+                    @grid.GetHtml(htmlAttributes: new { id = "grid" },   // id for ajaxUpdateContainerId parameter
+                         fillEmptyRows: false,
+                         tableStyle: "table table-bordered table-hover",
+                         mode: WebGridPagerModes.All,
+                         columns:
+                         grid.Columns(
+                         grid.Column(format: @<input type="hidden" name="ContactId" value="@item.ContactId" />),
+                         grid.Column("FirstName", "First Name", style: "col-lg-3"),
+                         grid.Column("LastName", "Last Name", style: "col-lg-3"),
+                         grid.Column("Email", "Email", style: "col-lg-3"),
+                         grid.Column("PhoneNumber", "Phone Number", style: "col-lg-3"),
+                         grid.Column("Status", "Status", style: "col-lg-3"),
+                         grid.Column(header: "Action", canSort: false, style: "action",
+                             format: @<text>
+                            @Html.Raw("<a data-modal='' href='/Contact/edit/" + item.ContactId + "' id='" + item.ContactId + "' title='Edit'> <span class='glyphicon glyphicon-edit'> </span> </a>")
+                            @Html.Raw("<a data-modal='' href='/Contact/delete/" + item.ContactId + "' id='" + item.ContactId + "' title='Delete'> <span class='glyphicon glyphicon-trash'> </span> </a>")
+                            </text>)
+
+                         ));
+
+                }
+                else
+                {
+                    <div>No records found.</div>
+                }
+
+
+            }
+        </div>
+    }
+
+</div>
+

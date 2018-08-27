@@ -1,0 +1,177 @@
+﻿@model Assignment.Models.ContactViewModel
+
+
+
+<script>
+
+    function getContact()
+    {
+        var fName = $("#FirstName").val();
+        var lName = $("#LastName").val();
+        var email = $("#Email").val();
+        var phoneNumber = $("#PhoneNumber").val();
+        var status = $("#chk").val();
+
+        if (fName == "") { return null; }
+        if (lName == "") { return null; }
+        if (email == "") { return null; }
+        if (phoneNumber == "") { return null; }
+        if (status == "") { return null; }
+
+        return { FirstName: fName, LastName: lName, Email: email, phoneNumber: PhoneNumber, Status: status };
+    }
+
+    $(document).ready(function (e) {
+        //$('#contactForm').bootstrapValidator({
+        //    container: '#messages',
+        //    feedbackIcons: {
+        //        valid: 'glyphicon glyphicon-ok',
+        //        invalid: 'glyphicon glyphicon-remove',
+        //        validating: 'glyphicon glyphicon-refresh'
+        //    },
+        //    fields: {
+        //        FirstName: {
+        //            validators: {
+        //                notEmpty: {
+        //                    message: 'The First name is required and cannot be empty'
+        //                },
+        //                stringLength: {
+        //                    max: 50,
+        //                    message: 'The First name must be less than 50 characters long'
+        //                }
+        //            }
+        //        },
+        //        Email: {
+        //            validators: {
+        //                notEmpty: {
+        //                    message: 'The email address is required and cannot be empty'
+        //                },
+        //                emailAddress: {
+        //                    message: 'The email address is not valid'
+        //                }
+        //            }
+        //        },
+        //        LastName: {
+        //            validators: {
+        //                notEmpty: {
+        //                    message: 'The Last Name is required and cannot be empty'
+        //                },
+        //                stringLength: {
+        //                    max: 50,
+        //                    message: 'The Last Name must be less than 50 characters long'
+        //                }
+        //            }
+        //        },
+        //        PhoneNumber: {
+        //            validators: {
+        //                notEmpty: {
+        //                    message: 'The content is required and cannot be empty'
+        //                },
+        //                stringLength: {
+        //                    max: 15,
+        //                    message: 'The Phone Number must be less than 15 characters long'
+        //                }
+        //            }
+        //        }
+        //    }
+        //});
+
+
+       
+
+        
+    });
+
+    $(function ()
+    {
+        $("#btnCreate").click(function () {
+
+            debugger;
+            var ContactViewModel = new Object();
+
+            ContactViewModel.FirstName = $("#FirstName").val();
+            ContactViewModel.LastName = $("#LastName").val();
+            ContactViewModel.Email = $("#Email").val();
+            ContactViewModel.PhoneNumber = $("#PhoneNumber").val();
+            ContactViewModel.Status = $("#chk").val();
+
+            if (ContactViewModel == null) { return; }
+
+            alert($("input#FirstName").val());
+
+            $.ajax({
+                type: "POST",
+                url: "Contact/Create",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(ContactViewModel),
+                success: function (data) {
+                    alert(data);
+
+                    $('#success').html("<div class='alert alert-success'>");
+                    $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                        .append("</button>");
+                    $('#success > .alert-success')
+                        .append("<strong>Thank you for your interest. Our team contact you soon </strong>");
+                    $('#success > .alert-success')
+                        .append('</div>');
+
+                    //clear all fields
+                    $('#contactForm').trigger("reset");
+                },
+                error: function (data)
+                { alert("Content load failed."); }
+            });
+        });
+    });
+</script>
+
+<form id="contactForm" class="form-horizontal" style="width:100%">
+    <div class="form-group">
+        <label class="col-md-3 control-label">First Name</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control" name="FirstName" id="FirstName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">Last Name</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control" name="LastName" id="LastName"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">Email</label>
+        <div class="col-md-6">
+            <input type="text" class="form-control" name="Email" id="Email"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">Phone Number</label>
+        <div class="col-md-6">
+            <input type="number" class="form-control" name="PhoneNumber" id="PhoneNumber"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">Is Active</label>
+        <div class="col-md-6">
+            <div class="checkbox">
+                <input type="checkbox" id="chk" name="status" />
+            </div>
+        </div>
+    </div>
+    <!-- #messages is where the messages are placed inside -->
+    <div class="form-group" style="display:none">
+        <div class="col-md-9 col-md-offset-3">
+            <div id="messages"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-9 col-md-offset-3">
+            <button type="submit" class="btn btn-default" id="btnCreate">Create</button>
+        </div>
+    </div>
+</form>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
